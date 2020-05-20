@@ -4,14 +4,14 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.pfe.enginapp.models.agent;
+import com.pfe.enginapp.models.Agent;
 import com.pfe.enginapp.repositories.agentRepository;
 
 
 public class LoginViewModel extends ViewModel {
 
 
-    private MutableLiveData<agent> agent;
+    private MutableLiveData<Agent> agent;
     private agentRepository mRepo;
 
     public void init(){
@@ -25,7 +25,7 @@ public class LoginViewModel extends ViewModel {
 
     }
 
-    public LiveData<agent> getAgent(){
+    public LiveData<Agent> getAgent(){
         return agent;
 
 

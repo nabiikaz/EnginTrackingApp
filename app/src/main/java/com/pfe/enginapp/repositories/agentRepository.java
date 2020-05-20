@@ -2,13 +2,13 @@ package com.pfe.enginapp.repositories;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.pfe.enginapp.models.agent;
+import com.pfe.enginapp.models.Agent;
 
 public class agentRepository {
 
     private static agentRepository instance;
 
-    private agent agent;
+    private Agent agent;
 
     public static agentRepository getInstance(){
         if(instance == null){
@@ -18,11 +18,11 @@ public class agentRepository {
 
     }
 
-    public MutableLiveData<agent> getAgent(){
+    public MutableLiveData<Agent> getAgent(){
         //this mimicks the retrieval of data from database
         setAgent();
 
-        MutableLiveData<agent> data = new MutableLiveData<>();
+        MutableLiveData<Agent> data = new MutableLiveData<>();
 
         data.setValue(this.agent);
 
@@ -33,8 +33,8 @@ public class agentRepository {
     }
 
     public void setAgent(){
-        agent = new agent();
-        agent.setNom("Nabi Zakaria");
+        agent = new Agent();
+        agent.setAgent_nom("Nabi Zakaria");
 
     }
 

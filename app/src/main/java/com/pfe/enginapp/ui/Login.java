@@ -4,40 +4,42 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import android.accounts.Account;
-import android.accounts.AccountAuthenticatorActivity;
-import android.accounts.AccountManager;
 import android.app.ProgressDialog;
-import android.content.Intent;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
+import android.widget.TextView;
+
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.pfe.enginapp.R;
-import com.pfe.enginapp.models.agent;
-import com.pfe.enginapp.repositories.authenticationRepository;
+import com.pfe.enginapp.models.Agent;
+
+import com.pfe.enginapp.repositories.AuthenticationService;
 import com.pfe.enginapp.viewmodels.LoginViewModel;
+
 
 public class Login extends AppCompatActivity  {
 
     
-    public static final String IS_ADDING_NEW_ACCOUNT = "IS_ADDING_NEW_ACCOUNT" ;
-    public static final String ACCOUNT_TYPE = "com.pfe.enginapp.account";
-    public final static String AUTH_TOKEN_TYPE = "LoginAuthType" ;
+    public final static int AUTH_INVALID_CREDENTIALS = 1;
+
+    public final static int AUTH_INVALID_TOKEN = 2;
+
+
 
 
     private TextInputLayout username_layout,password_layout;
+    private TextView login_label;
     private Button login_btn;
     private LoginViewModel loginViewModel;
     private ProgressDialog progressDoalog;
     private String PARAM_USER_PASS;
     
     private String authToken = "";
+    private String TAG = "Login";
+
+    private AuthenticationService authenticationService;
 
 
     @Override
@@ -46,6 +48,7 @@ public class Login extends AppCompatActivity  {
         setContentView(R.layout.activity_login);
 
 
+        authenticationService = new AuthenticationService(this,AuthenticationService.LOGIN_ACTIVITY);
 
 
 
@@ -55,10 +58,10 @@ public class Login extends AppCompatActivity  {
 
         loginViewModel.init();
 
-        loginViewModel.getAgent().observe(this, new Observer<agent>() {
+        loginViewModel.getAgent().observe(this, new Observer<Agent>() {
             @Override
-            public void onChanged(agent agent) {
-                username_layout.getEditText().setText(agent.getNom());
+            public void onChanged(Agent agent) {
+                //username_layout.getEditText().setText(agent.getAgent_nom());
 
             }
         });
@@ -68,10 +71,19 @@ public class Login extends AppCompatActivity  {
 
     }
 
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        finish();
+    }
+
     private void initViews(){
 
         username_layout = findViewById(R.id.username_layout);
         password_layout = findViewById(R.id.password_layout);
+        login_label = findViewById(R.id.login_label);
         login_btn = findViewById(R.id.login_btn);
 
 
@@ -82,7 +94,8 @@ public class Login extends AppCompatActivity  {
                 String username = username_layout.getEditText().getText().toString();
                 String password = password_layout.getEditText().getText().toString();
 
-                authenticationRepository.getInstance(Login.this).Login(username,password);
+
+                authenticationService.Login(username,password);
 
             }
         });
@@ -91,28 +104,37 @@ public class Login extends AppCompatActivity  {
 
     }
 
+
+
     @Override
     protected void onStart() {
         super.onStart();
+
+        //authenticationService.authenticateWithRedirection(AuthenticationService.DASHBOARD_ACTIVITY);
 
 
     }
 
 
 
-    public void authCompleted(Boolean auth_success) {
-        if(auth_success){
-            Intent intent = new Intent(Login.this,Dashboard.class);
-            startActivity(intent);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                Login.this.finish();
-            }
+    public void showAuthenticationErrors(int AUTH_FAILED_RESPONSE) {
 
-        }else{
-            username_layout.setError(" ");
-            username_layout.setEnabled(true);
-            password_layout.setError(" ");
 
+        switch (AUTH_FAILED_RESPONSE){
+
+            case AUTH_INVALID_CREDENTIALS :
+
+                username_layout.setError(" ");
+                username_layout.setEnabled(true);
+                password_layout.setError(" ");
+                login_label.setText(R.string.CREDENTIALS_INVALID);
+                break;
+            case AUTH_INVALID_TOKEN:
+                username_layout.setEnabled(true);
+                login_label.setText(R.string.SESSION_EXPIRED);
+                break;
+            default:
+                login_label.setText(R.string.AUTH_FAILED_UNKNOWN);
 
         }
 

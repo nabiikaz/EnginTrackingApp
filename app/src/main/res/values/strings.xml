@@ -4,4 +4,7 @@
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="login_btn">Login</string>
+    <string name="SESSION_EXPIRED">Your Session Is Expired.</string>
+    <string name="CREDENTIALS_INVALID">Username Or Password is Invalid.</string>
+    <string name="AUTH_FAILED_UNKNOWN">Authentication failed ( unknown reason ) contact app Master</string>
 </resources>
