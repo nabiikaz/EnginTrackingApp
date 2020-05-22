@@ -1,27 +1,18 @@
-package com.pfe.enginapp.repositories;
+package com.pfe.enginapp.services;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
-import android.app.DirectAction;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.Intent;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
 import com.pfe.enginapp.models.Agent;
 import com.pfe.enginapp.models.Auth;
-import com.pfe.enginapp.services.IUserClient;
-import com.pfe.enginapp.services.retrofitClient;
 import com.pfe.enginapp.ui.Dashboard;
 import com.pfe.enginapp.ui.Login;
 import com.pfe.enginapp.ui.MainActivity;
-
-import java.io.IOException;
-import java.lang.ref.WeakReference;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -141,7 +132,7 @@ public class AuthenticationService {
 
 
 
-        Retrofit retrofit = retrofitClient.getInstance().getRetrofit();
+        Retrofit retrofit = new retrofitClient().getRetrofit();
 
         final IUserClient userClient = retrofit.create(IUserClient.class);
         final Auth auth = new Auth(username, password);
@@ -290,7 +281,7 @@ public class AuthenticationService {
         Log.d(TAG, "checkToken: ");
 
         final String authToken = getCurrentUser().getAuthToken();
-        Retrofit retrofit = retrofitClient.getInstance().getRetrofit();
+        Retrofit retrofit = new retrofitClient().getRetrofit();
 
         IUserClient userClient = retrofit.create(IUserClient.class);
 
@@ -362,8 +353,13 @@ public class AuthenticationService {
             Intent intent = new Intent(mContext,Login.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             mContext.startActivity(intent);
-            ((Activity)mContext).finish();
+
         }
 
+    }
+
+
+    public String getAuthToken(){
+        return getCurrentUser().getAuthToken();
     }
 }

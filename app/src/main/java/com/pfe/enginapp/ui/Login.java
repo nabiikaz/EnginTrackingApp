@@ -15,7 +15,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.pfe.enginapp.R;
 import com.pfe.enginapp.models.Agent;
 
-import com.pfe.enginapp.repositories.AuthenticationService;
+import com.pfe.enginapp.services.AuthenticationService;
 import com.pfe.enginapp.viewmodels.LoginViewModel;
 
 
@@ -54,17 +54,7 @@ public class Login extends AppCompatActivity  {
 
         initViews();
 
-        loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
 
-        loginViewModel.init();
-
-        loginViewModel.getAgent().observe(this, new Observer<Agent>() {
-            @Override
-            public void onChanged(Agent agent) {
-                //username_layout.getEditText().setText(agent.getAgent_nom());
-
-            }
-        });
 
 
 
