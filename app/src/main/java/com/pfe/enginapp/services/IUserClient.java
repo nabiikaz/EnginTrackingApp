@@ -2,11 +2,13 @@ package com.pfe.enginapp.services;
 
 import com.pfe.enginapp.models.Agent;
 import com.pfe.enginapp.models.Auth;
+import com.pfe.enginapp.models.Team;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
+import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
@@ -23,6 +25,22 @@ public interface IUserClient {
 
     @POST("getAgent/{id}")
     Call<Agent> getAgent(@Path("id") String idAgent);
+
+    /**
+     * getTeam()
+     * @return the team members of the authenticated Agent
+     */
+    @GET("team")
+    Call<Team> getTeam();
+
+
+    /**
+     * getTeam(teamId)
+     * @param teamId
+     * @return the team members of passed teamId
+     */
+    @GET("team/{id}")
+    Call<Team> getTeam(@Path("id") String teamId);
 
 
 

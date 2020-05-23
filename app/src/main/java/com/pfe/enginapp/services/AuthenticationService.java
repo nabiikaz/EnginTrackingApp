@@ -10,7 +10,7 @@ import android.util.Log;
 
 import com.pfe.enginapp.models.Agent;
 import com.pfe.enginapp.models.Auth;
-import com.pfe.enginapp.ui.Dashboard;
+import com.pfe.enginapp.ui.Dashboard.Dashboard;
 import com.pfe.enginapp.ui.Login;
 import com.pfe.enginapp.ui.MainActivity;
 

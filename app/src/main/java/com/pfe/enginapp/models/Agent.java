@@ -10,10 +10,46 @@ public class Agent {
 
 
     String agent_nom;
+    String agent_prenom;
     String agent_role;
     String agent_username;
     String agent_id;
     String id_unite;
+    String type;
+
+    public Agent(String agent_id, String agent_nom, String agent_role, String agent_username,String id_unite) {
+        this.agent_id = agent_id;
+        this.agent_nom = agent_nom;
+        this.agent_role = agent_role;
+        this.agent_username = agent_username;
+        this.id_unite = id_unite;
+    }
+
+    public Agent() {
+    }
+
+    public String getAgent_prenom() {
+        return agent_prenom;
+    }
+
+    public void setAgent_prenom(String agent_prenom) {
+        this.agent_prenom = agent_prenom;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+
+
+
+
+
+
 
     public String getId_unite() {
         return id_unite;
@@ -33,16 +69,7 @@ public class Agent {
         this.agent_id = agent_id;
     }
 
-    public Agent(String agent_id, String agent_nom, String agent_role, String agent_username,String id_unite) {
-        this.agent_id = agent_id;
-        this.agent_nom = agent_nom;
-        this.agent_role = agent_role;
-        this.agent_username = agent_username;
-        this.id_unite = id_unite;
-    }
 
-    public Agent() {
-    }
 
     public String getAgent_nom() {
         return agent_nom;

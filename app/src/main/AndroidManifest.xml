@@ -18,7 +18,7 @@
         android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".ui.Dashboard"></activity>
+        <activity android:name=".ui.Dashboard.Dashboard"></activity>
         <activity android:name=".ui.Login" />
         <activity android:name=".ui.MainActivity">
             <intent-filter>

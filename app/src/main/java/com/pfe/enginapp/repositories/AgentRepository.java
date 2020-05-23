@@ -5,11 +5,13 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 
 import com.pfe.enginapp.models.Agent;
+import com.pfe.enginapp.models.Team;
 import com.pfe.enginapp.services.IUserClient;
 import com.pfe.enginapp.services.retrofitClient;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,14 +44,9 @@ public class AgentRepository {
     }
 
     public void getAgent(MutableLiveData<Agent> mAgentMutableLiveData,String idAgent) {
-        
+
 
         Log.d(TAG, "getAgent: ");
-
-
-
-
-
 
         IUserClient userClient = retrofit.create(IUserClient.class);
 
@@ -63,6 +60,23 @@ public class AgentRepository {
 
     }
 
+    public void getTeam(MutableLiveData<Team> mTeam) {
+
+
+        Log.d(TAG, "getAgent: ");
+
+        IUserClient userClient = retrofit.create(IUserClient.class);
+
+
+
+        Call<Team> call = userClient.getTeam();
+
+
+
+        call.enqueue(new FetchTeamCallBack(mTeam));
+
+    }
+
 
 
 
@@ -71,6 +85,7 @@ public class AgentRepository {
         agent.setAgent_nom("Nabi Zakaria");
 
     }
+
 
 
 
@@ -109,6 +124,39 @@ public class AgentRepository {
 
         }
     }
+
+
+    private  class FetchTeamCallBack implements Callback<Team> {
+
+        private WeakReference<MutableLiveData<Team>> dataRef;
+        private MutableLiveData<Team> data;
+
+        public FetchTeamCallBack(MutableLiveData<Team> data){
+            this.data = new WeakReference<MutableLiveData<Team>>(data).get();
+
+        }
+        @Override
+        public void onResponse(Call<Team> call, Response<Team> response) {
+            Log.d(TAG, "getAgent: after execute ");
+            if(response.isSuccessful()){
+                data.setValue(response.body());
+
+            }else{
+
+            }
+        }
+
+        @Override
+        public void onFailure(Call<Team> call, Throwable t) {
+            //Log.d(TAG, "getAgent: failed : \n");
+            t.printStackTrace();
+
+        }
+    }
+
+
+
+
 
 
 }

@@ -7,4 +7,5 @@
     <string name="SESSION_EXPIRED">Your Session Is Expired.</string>
     <string name="CREDENTIALS_INVALID">Username Or Password is Invalid.</string>
     <string name="AUTH_FAILED_UNKNOWN">Authentication failed ( unknown reason ) contact app Master</string>
+    <string name="team_tab_title">Team</string>
 </resources>

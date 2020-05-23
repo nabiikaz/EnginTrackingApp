@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
 
-    tools:context=".ui.Dashboard">
+    tools:context=".ui.Dashboard.Dashboard">
 
 
     <RelativeLayout
@@ -40,13 +40,39 @@
 
 
     </RelativeLayout>
-
     <Button
+        android:visibility="gone"
         android:id="@+id/fetch_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="fetch another agent"
         />
+
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+
+        app:tabIndicatorColor="#000"
+        app:tabIndicatorHeight="2dp"
+
+
+       />
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+
+    </androidx.viewpager.widget.ViewPager>
+
+
+
+
+
 
 
 
