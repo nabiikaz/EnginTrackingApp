@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 public class Team {
 
+
+
     String _id,date ;
     Boolean disponibilite;
     Engin engin;
@@ -50,6 +52,10 @@ public class Team {
     }
 
     public class Agent{
+
+        public static final String SECOURS_TYPE = "secours";
+        public static final String CHEF_TYPE = "chef";
+        public static final String CHAUFFEUR_TYPE = "chauffeur";
         String id_agent,nom,prenom,username,type;
 
         public String getId_agent() {

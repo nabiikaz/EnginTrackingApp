@@ -1,9 +1,11 @@
 package com.pfe.enginapp.adapters;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -43,6 +45,29 @@ public class TeamMemebersRecyclerViewAdapter extends RecyclerView.Adapter<TeamMe
 
         holder.agent_name_textview.setText(teamAgents.get(position).getNom());
 
+        //if(teamAgents.get(position).getType() == )
+        switch (teamAgents.get(position).getType()){
+            case Team.Agent.SECOURS_TYPE:
+               /* Drawable icon = mContext.getDrawable(R.id.secours)
+                holder.agent_type_ImageView.setImageDrawable(icon);*/
+                holder.agent_type_TextView.setText("Secours");
+
+
+                break;
+
+            case Team.Agent.CHEF_TYPE:
+
+                holder.agent_type_TextView.setText("Chef d'agres");
+
+                break;
+
+            case Team.Agent.CHAUFFEUR_TYPE:
+
+                holder.agent_type_TextView.setText("Chauffeur");
+
+                break;
+        }
+
     }
 
     @Override
@@ -50,21 +75,29 @@ public class TeamMemebersRecyclerViewAdapter extends RecyclerView.Adapter<TeamMe
         return teamAgents.size();
     }
 
+    public void setTeamAgents(ArrayList<Team.Agent> teamAgents) {
+        this.teamAgents = teamAgents;
+    }
+
+
+
+
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
-        TextView agent_name_textview;
+        TextView agent_name_textview,agent_type_TextView;
+        ImageView agent_type_ImageView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             agent_name_textview = itemView.findViewById(R.id.agent_name);
+            agent_type_ImageView = itemView.findViewById(R.id.agent_type_icon);
+            agent_type_TextView = itemView.findViewById(R.id.agent_type_text);
 
         }
     }
 
-    public void setTeamAgents(ArrayList<Team.Agent> teamAgents) {
-        this.teamAgents = teamAgents;
-    }
+
 
 }
