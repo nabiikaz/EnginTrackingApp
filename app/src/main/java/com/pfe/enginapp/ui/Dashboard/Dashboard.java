@@ -119,7 +119,7 @@ public class Dashboard extends AppCompatActivity {
         tabLayout =  findViewById(R.id.tabLayout);
         adapter = new TabAdapter(getSupportFragmentManager());
         adapter.addFragment(new TeamMembersList(authToken), getString(R.string.team_tab_title));
-        adapter.addFragment(new TeamMembersList(authToken), getString(R.string.team_tab_title));
+        adapter.addFragment(new MapsFragment(), getString(R.string.team_tab_title));
 
 
 

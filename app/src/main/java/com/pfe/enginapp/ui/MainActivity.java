@@ -24,6 +24,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.pfe.enginapp.App;
+import com.pfe.enginapp.Permission;
 import com.pfe.enginapp.R;
 import com.pfe.enginapp.receivers.NotificationReceiver;
 import com.pfe.enginapp.services.AuthenticationService;
@@ -46,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+        //get the needed permissions for the use of this application.
+        Permission permission = new Permission(this);
 
 
 

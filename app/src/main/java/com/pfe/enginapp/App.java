@@ -9,6 +9,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
         createNotificationChannels();
     }
     private void createNotificationChannels() {
@@ -28,6 +29,8 @@ public class App extends Application {
             NotificationManager manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(channel1);
             manager.createNotificationChannel(channel2);
+
+
         }
     }
 }
