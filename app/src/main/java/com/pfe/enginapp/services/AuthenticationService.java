@@ -51,8 +51,8 @@ public class AuthenticationService {
 
 
     //private static authenticationService instance;
-    private static Context mContext;
-    private static String currentActivity;
+    private  Context mContext;
+    private  String currentActivity;
     private static AccountManager accountManager;
 
 
@@ -127,7 +127,7 @@ public class AuthenticationService {
      */
 
     public void Login(final String username, final String password) {
-        final String TAG = "currentUser() :";
+        final String TAG = "Login() :";
 
 
 
@@ -177,6 +177,7 @@ public class AuthenticationService {
 
 
                 } else {
+                    Log.d(TAG, "onResponse: "+currentActivity);
 
                     ((Login) mContext).showAuthenticationErrors(Login.AUTH_INVALID_CREDENTIALS);
                 }
