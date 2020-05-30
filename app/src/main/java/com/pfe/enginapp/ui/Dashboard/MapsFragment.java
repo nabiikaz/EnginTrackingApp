@@ -111,6 +111,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
 
 
+        Toast.makeText(getContext(),"Map Ready",Toast.LENGTH_LONG).show();
+
 
 
 

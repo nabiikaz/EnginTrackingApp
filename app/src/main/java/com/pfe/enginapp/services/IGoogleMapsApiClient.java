@@ -46,6 +46,12 @@ public interface IGoogleMapsApiClient {
     Call<SnappedPoints> snapToRoads(@Query("path") String path, @Query("key") String key);
 
 
+    @POST("team/setAdresseTeam")
+    Call<ResponseBody> setAdresseTeam(@Body SnappedPoints.SnappedPoint.Location location);
+
+
+
+
 
 
 }

@@ -15,13 +15,17 @@ public class MapsViewModel extends ViewModel {
     MutableLiveData<List<SnappedPoints.SnappedPoint>> mSnappedPoints;
     MapApiRepository mMapApiRepository;
 
+    String authToken;
 
-    private final static int MAX_SIZE = 20;
+
+    private final static int MAX_SIZE = 10;
     String raw_path = "";
     int raw_path_positions_size = 0;
 
 
     public void init(String authToken){
+
+        this.authToken = authToken;
 
         if(mSnappedPoints != null){
             return;
@@ -29,7 +33,7 @@ public class MapsViewModel extends ViewModel {
 
 
 
-        mMapApiRepository = MapApiRepository.getInstance();
+        mMapApiRepository = MapApiRepository.getInstance(authToken);
         mSnappedPoints = new MutableLiveData<>();
 
     }

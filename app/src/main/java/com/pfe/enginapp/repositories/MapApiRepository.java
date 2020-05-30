@@ -5,9 +5,12 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.maps.model.LatLng;
 import com.pfe.enginapp.models.Agent;
 import com.pfe.enginapp.models.SnappedPoints;
 import com.pfe.enginapp.services.IGoogleMapsApiClient;
+import com.pfe.enginapp.services.IUserClient;
+import com.pfe.enginapp.services.retrofitClient;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -33,14 +36,21 @@ public class MapApiRepository {
     private static String ROADS_BASE_URL = "https://roads.googleapis.com/v1/";
     private static final String TAG = "MapApiRepository";
 
-    public static MapApiRepository getInstance(){
+    private   String authToken;
+
+    public static MapApiRepository getInstance(String authToken){
+
         if(instance == null){
-            instance = new MapApiRepository();
+            instance = new MapApiRepository(authToken);
         }
 
 
 
         return  instance;
+    }
+
+    private MapApiRepository(String authToken){
+        this.authToken = authToken;
     }
 
 
@@ -57,7 +67,7 @@ public class MapApiRepository {
 
         Call<SnappedPoints> call = userClient.snapToRoads(raw_path,"AIzaSyAOifFchSotR-YmTmtWsgybi62qqGmVjUU");
 
-        call.enqueue(new SnapToRoadCallBack(mSnappedPoints));
+        call.enqueue(new SnapToRoadCallBack(mSnappedPoints,authToken));
 
        /* call.enqueue(new Callback<SnappedPoints>() {
 
@@ -113,25 +123,60 @@ public class MapApiRepository {
         private WeakReference<MutableLiveData<SnappedPoints.SnappedPoint>> dataRef;
         private MutableLiveData<List<SnappedPoints.SnappedPoint>> data;
 
-        public SnapToRoadCallBack(MutableLiveData<List<SnappedPoints.SnappedPoint>> data){
+        String authToken ;
+
+        public SnapToRoadCallBack(MutableLiveData<List<SnappedPoints.SnappedPoint>> data,String authToken){
             this.data = new WeakReference<>(data).get();
+
+            this.authToken = authToken;
 
         }
         @Override
         public void onResponse(Call<SnappedPoints> call, Response<SnappedPoints> response) {
 
             if(response.isSuccessful()){
-                //data.setValue(response.body().getSnappedPoints());
+
+                List<SnappedPoints.SnappedPoint> result;
+
+                if(response.body() != null){
+                    result = response.body().getSnappedPoints() ;
+                    if(result.size() == 0)
+                        return;
+
+                }else{
+                    return;
+                }
+
+
+
                 List<SnappedPoints.SnappedPoint> currentSnappedPoints = data.getValue();
 
+                SnappedPoints.SnappedPoint.Location lastLocation;
                 if (currentSnappedPoints != null) {
 
-                    currentSnappedPoints.addAll(response.body() != null ? response.body().getSnappedPoints() : null);
+
+                    currentSnappedPoints.addAll(result);
                 }else{
-                    currentSnappedPoints =response.body() != null ? response.body().getSnappedPoints() : null;
+                    currentSnappedPoints =result;
                 }
 
                 data.postValue(currentSnappedPoints);
+
+
+
+
+                lastLocation  = currentSnappedPoints.get(currentSnappedPoints.size()-1).getLocation();
+
+
+
+
+                //get the last location coordinates
+
+                SendLastLocationToServer(lastLocation);
+
+
+
+
 
 
             }else{
@@ -146,6 +191,38 @@ public class MapApiRepository {
             t.printStackTrace();
 
         }
+
+
+        public void SendLastLocationToServer(SnappedPoints.SnappedPoint.Location lastLocation){
+
+
+            Retrofit retrofit = new retrofitClient(authToken).getRetrofit();
+
+
+
+
+            IGoogleMapsApiClient userClient = retrofit.create(IGoogleMapsApiClient.class);
+
+
+
+            Call<ResponseBody> call = userClient.setAdresseTeam(lastLocation);
+
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                }
+            });
+
+        }
+
+
+
     }
 
 
