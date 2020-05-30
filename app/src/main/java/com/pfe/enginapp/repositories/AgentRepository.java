@@ -37,7 +37,7 @@ public class AgentRepository {
 
     }
 
-    public AgentRepository(String authToken){
+    private AgentRepository(String authToken){
         //this.authToken = authToken;
         //get retrofit instance with an authorization header added to it holding the authToken value
         retrofit = new retrofitClient(authToken).getRetrofit();
@@ -85,16 +85,6 @@ public class AgentRepository {
         agent.setAgent_nom("Nabi Zakaria");
 
     }
-
-
-
-
-
-
-
-
-
-
 
 
     private  class FetchAgentCallBack implements Callback<Agent> {

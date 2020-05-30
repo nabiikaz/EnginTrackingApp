@@ -24,21 +24,7 @@ public class retrofitClient {
 
 
 
-    /*public static retrofitClient getInstance(){
-        if(instance == null){
-            instance = new retrofitClient();
-        }
-        return  instance;
-    }
 
-    public static retrofitClient getInstance(String authToken){
-        if(instance == null){
-
-            instance = new retrofitClient();
-        }
-        return  instance;
-    }
-    */
 
 
     public Retrofit getRetrofit() {
@@ -97,6 +83,30 @@ public class retrofitClient {
 
     }
 
+    public retrofitClient(Boolean isGoogleApiCall,String baseUrl) {
+
+
+        OkHttpClient.Builder  httpClient = new OkHttpClient.Builder();
+
+
+
+
+
+
+        retrofit = new Retrofit.Builder()
+                .baseUrl(baseUrl)
+
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+
+
+                .client(httpClient.build()) // add this line
+                .build();
+
+
+
+    }
+
     public Retrofit getClient() {
 
         return new Retrofit.Builder()
@@ -105,25 +115,6 @@ public class retrofitClient {
                 .build();
     }
 
-    public class HeaderInterceptor implements Interceptor {
 
-        String authToken;
-        public HeaderInterceptor(String authToken) {
-            this.authToken = authToken;
-        }
-
-
-        @Override
-        public Response intercept(Chain chain) throws IOException {
-            Request request = chain.request();
-            request = request.newBuilder()
-                    .header("authorization", this.authToken)
-
-                    .build();
-            Response response = chain.proceed(request);
-            return response;
-        }
-
-    }
 }
 
