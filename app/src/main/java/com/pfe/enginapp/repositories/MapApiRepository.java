@@ -4,21 +4,16 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.maps.model.LatLng;
-import com.pfe.enginapp.models.Agent;
+import com.pfe.enginapp.models.Intervention;
 import com.pfe.enginapp.models.SnappedPoints;
 import com.pfe.enginapp.services.IGoogleMapsApiClient;
 import com.pfe.enginapp.services.IUserClient;
 import com.pfe.enginapp.services.retrofitClient;
 
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -69,26 +64,46 @@ public class MapApiRepository {
 
         call.enqueue(new SnapToRoadCallBack(mSnappedPoints,authToken));
 
-       /* call.enqueue(new Callback<SnappedPoints>() {
 
-            @Override
-            public void onResponse(Call<SnappedPoints> call, Response<SnappedPoints> response) {
-                if(response.isSuccessful()){
-                    Log.d(TAG, "onResponse: size"+response.body().getSize());
-                }
-            }
 
-            @Override
-            public void onFailure(Call<SnappedPoints> call, Throwable t) {
 
-            }
-        });*/
+
+
 
 
     }
 
 
 
+
+    public void getIntervention(MutableLiveData<Intervention> mIntervention,String id_team){
+
+        Retrofit retrofit = new retrofitClient(authToken).getRetrofit();
+
+        IUserClient userClient = retrofit.create(IUserClient.class);
+
+        Call<Intervention> call = userClient.getIntervention(id_team);
+
+        call.enqueue(new FetchIntervention(mIntervention));
+
+
+
+
+
+
+
+    }
+
+    public void updateIntervention(MutableLiveData<Intervention> mIntervention,Intervention intervention){
+        Retrofit retrofit = new retrofitClient(authToken).getRetrofit();
+
+        IUserClient userClient = retrofit.create(IUserClient.class);
+
+
+        Call<Intervention> call = userClient.updateIntervention(intervention.get_id(),intervention);
+
+        call.enqueue(new FetchIntervention(mIntervention));
+    }
 
 
 
@@ -113,6 +128,40 @@ public class MapApiRepository {
     }
 
 
+
+    private  class FetchIntervention implements  Callback<Intervention>{
+
+        private static final String TAG = "FetchIntervention";
+
+        MutableLiveData<Intervention> data ;
+
+
+        public FetchIntervention(MutableLiveData<Intervention> data){
+
+            this.data = new WeakReference<>(data).get();
+
+        }
+
+        @Override
+        public void onResponse(Call<Intervention> call, Response<Intervention> response) {
+
+            if(response.isSuccessful()){
+
+
+
+                this.data.postValue(response.body());
+
+               // Log.d(TAG, "onResponse: Successful"+response.body().getAdresse().getAdresse_rue());
+
+            }
+
+        }
+
+        @Override
+        public void onFailure(Call<Intervention> call, Throwable t) {
+
+        }
+    }
 
 
 

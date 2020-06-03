@@ -52,4 +52,11 @@ dependencies {
     //google location service
     implementation 'com.google.android.gms:play-services-location:15.0.1'
 
+
+    //socket
+
+    implementation('com.github.nkzawa:socket.io-client:0.5.0') {
+        exclude group: 'org.json', module: 'json'
+    }
+
 }

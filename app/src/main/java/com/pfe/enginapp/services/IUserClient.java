@@ -2,6 +2,7 @@ package com.pfe.enginapp.services;
 
 import com.pfe.enginapp.models.Agent;
 import com.pfe.enginapp.models.Auth;
+import com.pfe.enginapp.models.Intervention;
 import com.pfe.enginapp.models.Team;
 
 import okhttp3.ResponseBody;
@@ -41,6 +42,15 @@ public interface IUserClient {
      */
     @GET("team/{id}")
     Call<Team> getTeam(@Path("id") String teamId);
+
+
+
+    @GET("intervention/getInterventionByChef/{id_team}")
+    Call<Intervention> getIntervention(@Path("id_team") String id_team);
+
+
+    @POST("intervention/updateInterventionByChef/{id_intervention}")
+    Call<Intervention> updateIntervention(@Path("id_intervention") String id_intervention,@Body Intervention intervention);
 
 
 

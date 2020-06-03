@@ -295,6 +295,7 @@ public class AuthenticationService {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
                 if (response.isSuccessful()) {
+                    Log.d(TAG, "onResponse: ");
 
                     if(activity_name.equals(AuthenticationService.DASHBOARD_ACTIVITY)){
 
@@ -330,6 +331,9 @@ public class AuthenticationService {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.d(TAG, "onFailure: ");
+
+                t.printStackTrace();
 
             }
         });

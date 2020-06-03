@@ -43,6 +43,8 @@ public class TeamMembersListViewModel extends ViewModel {
     public LiveData<Team> getTeam(){
         mAgentRepository.getTeam(mTeam);
 
+
+
         return mTeam;
     }
 

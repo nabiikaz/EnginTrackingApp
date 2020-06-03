@@ -16,7 +16,103 @@
           android:name="com.google.android.gms.maps.SupportMapFragment"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
+          android:visibility="gone"
           tools:context=".ui.Dashboard.MapsActivity" />
+
+
+     <com.google.android.material.card.MaterialCardView
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_margin="30dp"
+         >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+
+           <TextView
+
+               android:id="@+id/address_rue"
+               android:padding="5dp"
+
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+
+
+               android:text="Address"/>
+
+
+
+           <TextView
+               android:id="@+id/phone"
+               android:padding="5dp"
+
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:text="0555655100"/>
+
+
+           
+           
+           <Button
+               android:id="@+id/intervention_btn"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:background="@color/recu"
+               android:layout_marginTop="10dp"
+               android:layout_gravity="center"
+               android:text="commencer l'intervention"
+               android:textColor="#fff"
+               android:paddingHorizontal="30dp"
+
+              />
+
+        </LinearLayout>
+
+
+
+
+
+
+
+
+     </com.google.android.material.card.MaterialCardView>
+
+      <ImageView
+          android:layout_above="@id/incident_btn"
+          android:id="@+id/ambulance_btn"
+          android:layout_width="40dp"
+          android:layout_height="50dp"
+          android:src="@drawable/ambulance"
+          android:layout_marginStart="20dp"
+          android:layout_marginBottom="20dp"
+          />
+
+      <ImageView
+          android:layout_above="@id/hospital_btn"
+          android:id="@+id/incident_btn"
+          android:layout_width="40dp"
+          android:layout_height="50dp"
+          android:src="@drawable/accident"
+          android:layout_marginStart="20dp"
+          android:layout_marginBottom="20dp"
+          />
+
+      <ImageView
+          android:id="@+id/hospital_btn"
+          android:layout_width="40dp"
+          android:layout_height="50dp"
+          android:src="@drawable/hospital"
+          android:layout_alignParentBottom="true"
+          android:layout_marginStart="20dp"
+          android:layout_marginBottom="30dp"
+          />
+
+
+
 
 
 

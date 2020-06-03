@@ -118,4 +118,16 @@ public class Team {
             this.matricule = matricule;
         }
     }
+
+
+    public Agent getAgent(String id){
+        for (Agent agent : agents) {
+            if(agent.getId_agent() == id){
+                return agent;
+            }
+        }
+
+        return null;
+
+    }
 }
