@@ -16,7 +16,19 @@ public class Intervention {
     Adresse adresse;
     String[] description;
 
-    String dateTimeAppel,dateTimeDepart,dateTimeArrive;
+    String dateTimeAppel;
+    String dateTimeDepart;
+    String dateTimeArrive;
+
+    public String getDateTimeFin() {
+        return dateTimeFin;
+    }
+
+    public void setDateTimeFin(String dateTimeFin) {
+        this.dateTimeFin = dateTimeFin;
+    }
+
+    String dateTimeFin;
 
     Transfere transfere;
 

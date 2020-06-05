@@ -100,9 +100,11 @@ public class MapApiRepository {
         IUserClient userClient = retrofit.create(IUserClient.class);
 
 
-        Call<Intervention> call = userClient.updateIntervention(intervention.get_id(),intervention);
+        Call<Intervention> call = userClient.updateInterventionStatus(intervention.get_id(),intervention);
 
         call.enqueue(new FetchIntervention(mIntervention));
+
+
     }
 
 
@@ -137,6 +139,7 @@ public class MapApiRepository {
 
 
         public FetchIntervention(MutableLiveData<Intervention> data){
+            Log.d(TAG, "FetchIntervention: ");
 
             this.data = new WeakReference<>(data).get();
 
@@ -151,7 +154,7 @@ public class MapApiRepository {
 
                 this.data.postValue(response.body());
 
-               // Log.d(TAG, "onResponse: Successful"+response.body().getAdresse().getAdresse_rue());
+               Log.d(TAG, "onResponse: Successful"+ (response.body() != null ? response.body().getStatut() : "null"));
 
             }
 

@@ -3,7 +3,9 @@ package com.pfe.enginapp.ui.Dashboard;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
@@ -13,11 +15,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -77,11 +81,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
     TextView address_rue,phone;
 
+    TextView call_time,start_time,arrival_time,transfer_time;
+
     ImageView ambulance_btn, accident_btn, hospital_btn;
     Button intervention_btn;
+    ProgressBar progressBar;
     private String id_team;
 
-    Intervention currentIntervention;
 
     public MapsFragment(String authToken){
         this.authToken = authToken;
@@ -211,10 +217,15 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
 
 
+
+
+
                 if(intervention == null)
                     return;
 
-                currentIntervention = intervention;
+                Log.d(TAG, "getIntervention > onChanged:> status "+intervention.getStatut());
+
+
 
                 address_rue.setText(intervention.getAdresse().getAdresse_rue());
                 phone.setText(intervention.getNumTel());
@@ -222,7 +233,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
                 accidentMarker = initMarker(intervention.getAdresse().getGps_coordonnee().getLatLng(),"Accident",ACCIDENT_RESOURCE_ID);
 
-                if (intervention.getTransfere().getGps_coordonnee() == null) {
+                if (intervention.getTransfere().getGps_coordonnee() != null) {
                     hospitalMarker = initMarker(intervention.getTransfere().getGps_coordonnee().getLatLng(),intervention.getTransfere().getLieu(),HOSPITAL_RESOURCE_ID);
 
                 }
@@ -230,8 +241,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                 String status = intervention.getStatut();
                 switch (status) {
                     case "recu":
+
                         intervention_btn.setText("commencer l'intervention");
                         intervention_btn.setBackgroundResource(R.color.recu);
+
+                        call_time.setText("Heure de l'appel :"+intervention.getDateTimeAppel());
 
                         break;
 
@@ -239,25 +253,36 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
                         intervention_btn.setText("Arrivé à destination");
                         intervention_btn.setBackgroundResource(R.color.blue);
+
+                        start_time.setText("Heure de depart :"+intervention.getDateTimeDepart());
                         break;
 
                     case "en_cours":
                         intervention_btn.setText("transfert vers Hopital");
                         intervention_btn.setBackgroundResource(R.color.colorPrimary);
+
+                        arrival_time.setText("Heure d'arrivée   :"+intervention.getDateTimeArrive());
                         break;
 
                     case "transfere":
 
-                        intervention_btn.setText("transfert vers Hopital");
-                        intervention_btn.setBackgroundResource(R.color.orange);
+                        intervention_btn.setText("Terminer L'intervention");
+                        intervention_btn.setBackgroundResource(R.color.red);
+
+                        transfer_time.setText("Heure de transfer   :"+intervention.getTransfere().getDateTimeDepart());
 
                         break;
 
                     case "termine":
-                        intervention_btn.setText("Terminer L'intervention");
-                        intervention_btn.setBackgroundResource(R.color.red);
+                        intervention_btn.setText("Cette intervention est terminée");
+                        intervention_btn.setBackgroundResource(R.color.recu);
+                        intervention_btn.setClickable(false);
                         break;
                 }
+
+                progressBar.setVisibility(View.INVISIBLE);
+
+
 
 
 
@@ -281,6 +306,15 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
         address_rue = view.findViewById(R.id.address_rue);
         phone = view.findViewById(R.id.phone);
+        progressBar = view.findViewById(R.id.progressBar);
+
+
+        call_time = view.findViewById(R.id.call_time);
+        start_time = view.findViewById(R.id.start_time);
+        arrival_time = view.findViewById(R.id.arrival_time);
+        transfer_time = view.findViewById(R.id.transfer_time);
+
+
 
 
         ambulance_btn = view.findViewById(R.id.ambulance_btn);
@@ -339,38 +373,62 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         intervention_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
+
+                Intervention currentIntervention = mMapsViewModel.getIntervention(id_team).getValue();
+
                 if (currentIntervention == null) {
                     return;
                 }
 
                 String status = currentIntervention.getStatut();
 
+                Log.d(TAG, "intervention_btn > setOnClickListener> currentIntervention : status "+currentIntervention.getStatut());
+                String newStatus ="";
+                String dialogMessage = "";
+
                 switch (status){
                     case "recu" :
-
-                        currentIntervention.setStatut("depart");
+                        newStatus = "depart";
+                        dialogMessage = "Vous êtes sur le point de commencer cette intervention.";
 
                         break;
 
                     case "depart" :
+                        newStatus = "en_cours";
+                        dialogMessage = "Arrivé sur le lieu de l'intervention!";
 
-                        currentIntervention.setStatut("en_cours");
+
                         break;
 
                     case "en_cours" :
-                        currentIntervention.setStatut("transfere");
+                        newStatus = "transfere";
+                        dialogMessage = "Transfert à l'hôpital le plus proche.";
+
                         break;
 
                     case "transfere" :
-                        currentIntervention.setStatut("termine");
+                        newStatus = "termine";
+                        dialogMessage = "L'intervention est terminée!";
+
+
                         break;
 
                     case "termine" :
+
+                        intervention_btn.setClickable(false);
+
                         break;
                 }
+                //mMapsViewModel.updateIntervention(currentIntervention);
+
+                confirmInterventionStatusChange(newStatus,dialogMessage);
 
 
-                mMapsViewModel.updateIntervention(currentIntervention);
+
+
+
             }
         });
 
@@ -425,6 +483,68 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
 
     }
+
+    public void confirmInterventionStatusChange(final String status,final String message){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+        builder.setTitle("Changement de statut d'intervention")
+                .setMessage(message)
+                .setNeutralButton("Confirmer", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        updateInterventionStatus(status);
+
+
+                    }
+                });
+
+        builder.create().show();
+
+
+    }
+
+    private void updateInterventionStatus(String status){
+        if(status == "")
+            return;
+        Intervention intervention = mMapsViewModel.getIntervention(id_team).getValue();
+        intervention.setStatut(status);
+        switch (status){
+            case "recu" :
+
+                break;
+
+            case "depart" :
+                intervention.setDateTimeDepart("now()");
+
+                break;
+
+            case "en_cours" :
+                intervention.setDateTimeArrive("now()");
+
+
+                break;
+
+            case "transfere" :
+                intervention.getTransfere().setDateTimeDepart("now()");
+
+
+
+                break;
+
+            case "termine" :
+                intervention.setDateTimeFin("now()");
+
+
+                break;
+        }
+
+        mMapsViewModel.updateIntervention(intervention);
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+
+
 
 
     private static class LocationCallBackHandler extends LocationCallback {

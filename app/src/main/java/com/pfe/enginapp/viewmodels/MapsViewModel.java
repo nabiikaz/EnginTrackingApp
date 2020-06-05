@@ -61,6 +61,8 @@ public class MapsViewModel extends ViewModel {
     }
 
 
+
+
     public void addRawPosition(LatLng latLng){
 
         if(raw_path_positions_size == MAX_SIZE){

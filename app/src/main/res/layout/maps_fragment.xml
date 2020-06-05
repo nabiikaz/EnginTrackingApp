@@ -33,6 +33,7 @@
             android:padding="10dp">
 
 
+
            <TextView
 
                android:id="@+id/address_rue"
@@ -46,13 +47,49 @@
 
 
 
-           <TextView
-               android:id="@+id/phone"
-               android:padding="5dp"
+            <TextView
+                android:id="@+id/phone"
+                android:padding="5dp"
 
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:text="0555655100"/>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="0555655100"/>
+
+            <TextView
+                android:id="@+id/call_time"
+
+                android:padding="5dp"
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Heure de l'appel :"/>
+            <TextView
+                android:id="@+id/start_time"
+
+                android:padding="5dp"
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Heure de depart :"/>
+
+            <TextView
+                android:id="@+id/arrival_time"
+
+                android:padding="5dp"
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Heure d'arrivée   :"/>
+
+            <TextView
+                android:id="@+id/transfer_time"
+
+                android:padding="5dp"
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Heure de transfer   :"/>
+
 
 
            
@@ -93,6 +130,7 @@
 
       <ImageView
           android:layout_above="@id/hospital_btn"
+
           android:id="@+id/incident_btn"
           android:layout_width="40dp"
           android:layout_height="50dp"
@@ -110,6 +148,15 @@
           android:layout_marginStart="20dp"
           android:layout_marginBottom="30dp"
           />
+
+       <ProgressBar
+           android:id="@+id/progressBar"
+           android:visibility="invisible"
+           android:layout_width="150dp"
+           android:layout_height="150dp"
+           android:layout_centerInParent="true"
+
+           />
 
 
 

@@ -14,7 +14,9 @@ import androidx.viewpager.widget.ViewPager;
 
 
 import android.app.Notification;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Bundle;
@@ -29,6 +31,7 @@ import android.widget.Toast;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.material.tabs.TabLayout;
 import com.pfe.enginapp.App;
 import com.pfe.enginapp.R;
@@ -280,8 +283,8 @@ public class Dashboard extends AppCompatActivity {
 
     public void sendInterventionNotification(String id){
 
-        String title = " Intervention:"+id;
-        String message = "Vous êtes ici requis dans une intervention , veuillez vous rendre à votre Engin désigné";
+        String title = " Intervention Alert";
+        String message = "Vous êtes ici requis dans une intervention.";
         /*Intent activityIntent = new Intent(this, MainActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(this,
                 0, activityIntent, 0);
@@ -296,9 +299,12 @@ public class Dashboard extends AppCompatActivity {
                         "/" +
                         R.raw.siren);
 
+        BitmapDrawable bitmapDrawableRaw = (BitmapDrawable)getResources().getDrawable(R.drawable.logo);
+        Bitmap largeIcon = bitmapDrawableRaw.getBitmap();
 
         Notification notification = new NotificationCompat.Builder(this, App.CHANNEL_1_ID)
                 .setSmallIcon(R.drawable.logo)
+                .setLargeIcon(largeIcon)
 
 
 

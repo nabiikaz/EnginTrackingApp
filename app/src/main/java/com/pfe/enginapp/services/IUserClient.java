@@ -53,6 +53,13 @@ public interface IUserClient {
     Call<Intervention> updateIntervention(@Path("id_intervention") String id_intervention,@Body Intervention intervention);
 
 
+    @POST("intervention/updateInterventionByChef/{id_intervention}")
+    Call<Intervention> updateInterventionStatus(@Path("id_intervention") String id_intervention,@Body  Intervention intervention);
+
+
+
+
+
 
 
 }
