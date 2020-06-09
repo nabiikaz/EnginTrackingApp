@@ -4,6 +4,9 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.pfe.enginapp.models.DistanceMatrixResult;
+import com.pfe.enginapp.models.Hospital;
 import com.pfe.enginapp.models.Intervention;
 import com.pfe.enginapp.models.SnappedPoints;
 import com.pfe.enginapp.services.IGoogleMapsApiClient;
@@ -11,6 +14,8 @@ import com.pfe.enginapp.services.IUserClient;
 import com.pfe.enginapp.services.retrofitClient;
 
 import java.lang.ref.WeakReference;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
@@ -29,6 +34,7 @@ public class MapApiRepository {
     private  Retrofit retrofit;
 
     private static String ROADS_BASE_URL = "https://roads.googleapis.com/v1/";
+    private static String DISTANCE_BASE_URL = "https://maps.googleapis.com/maps/api/distancematrix/";
     private static final String TAG = "MapApiRepository";
 
     private   String authToken;
@@ -128,6 +134,156 @@ public class MapApiRepository {
                 .build();
 
     }
+
+    public void getHospitals(MutableLiveData<List<Hospital>> mHospitals) {
+
+        Retrofit retrofit = new retrofitClient(authToken).getRetrofit();
+
+        IUserClient userClient = retrofit.create(IUserClient.class);
+
+        Call<List<Hospital>> call = userClient.getHospitals();
+
+        call.enqueue(new FetchHopitals(mHospitals,"34.890267,-1.331937"));
+
+    }
+
+    private  class FetchHopitals implements  Callback<List<Hospital>>{
+
+        private static final String TAG = "FetchHospitals";
+
+        MutableLiveData<List<Hospital>> data ;
+        String origin;
+
+
+        public FetchHopitals(MutableLiveData<List<Hospital>> data,String origin){
+            Log.d(TAG, "FetchHospitals: ");
+
+            this.data = new WeakReference<>(data).get();
+            this.origin = origin;
+
+        }
+
+        @Override
+        public void onResponse(Call<List<Hospital>> call, Response<List<Hospital>> response) {
+
+            if(response.isSuccessful()){
+
+               // Log.d(TAG, "onResponse: "+getDestinationsString(response.body()));
+
+                final List<Hospital> hospitals = response.body();
+
+                if(hospitals == null)
+                    return;
+
+                data.postValue(hospitals);
+
+
+
+
+
+
+              Retrofit retrofit = getRetrofit(DISTANCE_BASE_URL);
+
+              IGoogleMapsApiClient userClient = retrofit.create(IGoogleMapsApiClient.class);
+
+
+
+                Call<DistanceMatrixResult> secondCall = userClient.getDistanceMatrixResult(origin,getDestinationsString(hospitals),"AIzaSyAOifFchSotR-YmTmtWsgybi62qqGmVjUU");
+
+
+                Log.d(TAG, "onResponse: url"+secondCall.request().url());
+                secondCall.enqueue(new FetchDistances(this.data));
+
+
+                
+
+            }
+
+        }
+
+        @Override
+        public void onFailure(Call<List<Hospital>> call, Throwable t) {
+
+        }
+        
+        public String getDestinationsString(List<Hospital> hospitals){
+            StringBuilder result = new StringBuilder();
+
+            for (Hospital hospital : hospitals) {
+
+                result.append(hospital.getGps_coordonnee().toString()).append("|");
+
+                
+            }
+
+
+
+
+
+
+            return result.toString();
+            
+        }
+    }
+
+
+    private  class FetchDistances implements  Callback<DistanceMatrixResult>{
+
+        private static final String TAG = "FetchDistances";
+
+        MutableLiveData<List<Hospital>> data ;
+
+
+        public FetchDistances(MutableLiveData<List<Hospital>> data){
+            
+
+            this.data = new WeakReference<>(data).get();
+
+        }
+
+        @Override
+        public void onResponse(Call<DistanceMatrixResult> call, Response<DistanceMatrixResult> response) {
+            Log.d(TAG, "secondCall: ");
+            List<Hospital> hospitals = data.getValue();
+            if(response.isSuccessful()){
+
+                List<DistanceMatrixResult.Element> elements = response.body().getRows().get(0).getElements() ;
+                Log.d(TAG, "onResponse: distance response "+elements.get(0).getDistance().getText());
+                for (int i = 0; i < elements.size(); i++) {
+                    hospitals.get(i).setDistance(elements.get(i).getDistance());
+                    hospitals.get(i).setDuration(elements.get(i).getDuration());
+
+                }
+
+                Collections.sort(hospitals, new Comparator<Hospital>(){
+                    @Override
+                    public int compare(Hospital o1, Hospital o2) {
+                        return Long.valueOf(o1.getDistance().getValue()).compareTo(o2.getDistance().getValue());
+
+
+                    }
+
+
+                });
+
+                data.postValue(hospitals);
+
+            }else{
+                Log.d(TAG, "onResponse: distance not successful status"+response.code()+" \n body"+response.body());
+
+            }
+        }
+
+        @Override
+        public void onFailure(Call<DistanceMatrixResult> call, Throwable t) {
+            Log.d(TAG, "secondCall F: ");
+            t.printStackTrace();
+
+
+        }
+    }
+
+
 
 
 

@@ -14,6 +14,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -41,6 +43,8 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.pfe.enginapp.LocationManager;
 import com.pfe.enginapp.R;
+import com.pfe.enginapp.adapters.HospitalsRecyclerViewAdapter;
+import com.pfe.enginapp.models.Hospital;
 import com.pfe.enginapp.models.Intervention;
 import com.pfe.enginapp.models.SnappedPoints;
 import com.pfe.enginapp.viewmodels.MapsViewModel;
@@ -49,6 +53,9 @@ import java.util.List;
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private static final String TAG = "MapsFragment";
+
+    private HospitalsRecyclerViewAdapter adapter;
+    private RecyclerView hospitalRecyclerView;
 
     private MapsViewModel mViewModel;
     private LocationManager locationManager;
@@ -291,6 +298,17 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
+
+        mMapsViewModel.getHospitals().observe(getViewLifecycleOwner(), new Observer<List<Hospital>>() {
+            @Override
+            public void onChanged(List<Hospital> hospitals) {
+                Log.d(TAG, "getHospitals > onChanged: "+hospitals.get(1).getName());
+                adapter.setmHospitals(hospitals);
+                adapter.notifyDataSetChanged();
+
+            }
+        });
+
     }
 
     private void updateCamera(LatLng location){
@@ -321,6 +339,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         accident_btn = view.findViewById(R.id.incident_btn);
         hospital_btn = view.findViewById(R.id.hospital_btn);
         intervention_btn  = view.findViewById(R.id.intervention_btn);
+
+
+        hospitalRecyclerView = view.findViewById(R.id.hospitalsRecyclerView);
+
+        initRecyclerView();
+
+
 
 
         ambulance_btn.setOnClickListener(new View.OnClickListener() {
@@ -436,6 +461,18 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     }
 
 
+    private void initRecyclerView(){
+       adapter = new HospitalsRecyclerViewAdapter(this.getContext());
+
+
+
+        hospitalRecyclerView.setAdapter(adapter);
+
+
+
+        hospitalRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+
+    }
 
 
     private Marker initMarker(LatLng position,String title,int resourceId){

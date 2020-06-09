@@ -24,6 +24,7 @@
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
          android:layout_margin="30dp"
+         android:visibility="gone"
          >
 
         <LinearLayout
@@ -118,6 +119,41 @@
 
      </com.google.android.material.card.MaterialCardView>
 
+       <com.google.android.material.card.MaterialCardView
+           android:layout_width="match_parent"
+           android:layout_height="200dp"
+           android:layout_margin="30dp"
+           android:visibility="visible"
+           android:background="#1BFFFFFF"
+
+           >
+
+           <ScrollView
+               android:layout_width="match_parent"
+               android:layout_height="match_parent">
+
+                   <androidx.recyclerview.widget.RecyclerView
+                       android:id="@+id/hospitalsRecyclerView"
+                       android:layout_width="match_parent"
+                       android:layout_height="match_parent"/>
+
+
+
+
+
+
+           </ScrollView>
+
+
+
+
+
+
+
+
+
+
+       </com.google.android.material.card.MaterialCardView>
       <ImageView
           android:layout_above="@id/incident_btn"
           android:id="@+id/ambulance_btn"

@@ -130,4 +130,15 @@ public class Team {
         return null;
 
     }
+
+    public String getChefId(){
+        for (Agent agent : agents) {
+            if(agent.getType() == Agent.CHEF_TYPE ){
+                return agent.getId_agent();
+            }
+        }
+
+        return  "";
+
+    }
 }

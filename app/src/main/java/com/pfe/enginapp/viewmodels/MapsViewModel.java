@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.pfe.enginapp.models.Hospital;
 import com.pfe.enginapp.models.Intervention;
 import com.pfe.enginapp.models.SnappedPoints;
 import com.pfe.enginapp.repositories.MapApiRepository;
@@ -14,6 +15,8 @@ import java.util.List;
 public class MapsViewModel extends ViewModel {
 
     MutableLiveData<List<SnappedPoints.SnappedPoint>> mSnappedPoints;
+    MutableLiveData<List<Hospital>> mHospitals;
+
     MutableLiveData<Intervention> mIntervention;
 
     MapApiRepository mMapApiRepository;
@@ -39,6 +42,7 @@ public class MapsViewModel extends ViewModel {
         mMapApiRepository = MapApiRepository.getInstance(authToken);
         mSnappedPoints = new MutableLiveData<>();
         mIntervention = new MutableLiveData<>();
+        mHospitals = new MutableLiveData<>();
 
     }
 
@@ -58,6 +62,11 @@ public class MapsViewModel extends ViewModel {
 
         mMapApiRepository.updateIntervention(mIntervention,intervention);
 
+    }
+
+    public LiveData<List<Hospital>> getHospitals(){
+        mMapApiRepository.getHospitals(mHospitals);
+        return mHospitals;
     }
 
 

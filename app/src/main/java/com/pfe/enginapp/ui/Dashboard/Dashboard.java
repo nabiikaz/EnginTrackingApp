@@ -234,6 +234,11 @@ public class Dashboard extends AppCompatActivity {
 
                 String id_team = mTeam.get_id();
 
+                if(signedInAgent.getAgent_id().equals(mTeam.getChefId())){
+                    mapsFragment.intervention_btn.setVisibility(View.GONE);
+                }else
+                    mapsFragment.intervention_btn.setVisibility(View.VISIBLE);
+
                 mapsFragment.updateTeamId(id_team);
 
 

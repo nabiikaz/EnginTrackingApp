@@ -2,6 +2,7 @@ package com.pfe.enginapp.services;
 
 import com.pfe.enginapp.models.Agent;
 import com.pfe.enginapp.models.Auth;
+import com.pfe.enginapp.models.DistanceMatrixResult;
 import com.pfe.enginapp.models.SnappedPoints;
 import com.pfe.enginapp.models.Team;
 
@@ -48,6 +49,9 @@ public interface IGoogleMapsApiClient {
 
     @POST("team/setAdresseTeam")
     Call<ResponseBody> setAdresseTeam(@Body SnappedPoints.SnappedPoint.Location location);
+
+    @GET("json")
+    Call<DistanceMatrixResult> getDistanceMatrixResult(@Query("origins") String origins, @Query("destinations") String destinations, @Query("key") String key);
 
 
 

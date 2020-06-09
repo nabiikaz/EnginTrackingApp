@@ -2,8 +2,11 @@ package com.pfe.enginapp.services;
 
 import com.pfe.enginapp.models.Agent;
 import com.pfe.enginapp.models.Auth;
+import com.pfe.enginapp.models.Hospital;
 import com.pfe.enginapp.models.Intervention;
 import com.pfe.enginapp.models.Team;
+
+import java.util.List;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -56,6 +59,8 @@ public interface IUserClient {
     @POST("intervention/updateInterventionByChef/{id_intervention}")
     Call<Intervention> updateInterventionStatus(@Path("id_intervention") String id_intervention,@Body  Intervention intervention);
 
+    @GET("hospital")
+    Call<List<Hospital>> getHospitals();
 
 
 
