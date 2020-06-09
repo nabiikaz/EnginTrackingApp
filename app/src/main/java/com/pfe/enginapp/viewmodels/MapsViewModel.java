@@ -52,16 +52,31 @@ public class MapsViewModel extends ViewModel {
         return mSnappedPoints;
     }
 
-    public LiveData<Intervention> getIntervention(String id_team){
+    public LiveData<Intervention> fetchIntervention(String id_team){
         mMapApiRepository.getIntervention(mIntervention,id_team);
 
         return mIntervention;
     }
 
+    public Intervention getIntervention(){
+
+
+        return mIntervention.getValue();
+    }
+
+
+
     public void updateIntervention(Intervention intervention){
 
         mMapApiRepository.updateIntervention(mIntervention,intervention);
 
+    }
+
+    public  void updateHospitalTransfer(String hospitalId){
+        mIntervention.getValue().getTransfere().setHospital(hospitalId);
+
+
+        mMapApiRepository.updateIntervention(mIntervention,mIntervention.getValue());
     }
 
     public LiveData<List<Hospital>> getHospitals(){

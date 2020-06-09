@@ -177,15 +177,14 @@ public class Intervention {
     }
 
     public class Transfere{
-        String lieu,dateTimeDepart;
-        Gps_coordonnee gps_coordonnee;
+        String dateTimeDepart,hospital;
 
-        public String getLieu() {
-            return lieu;
+        public String getHospital() {
+            return hospital;
         }
 
-        public void setLieu(String lieu) {
-            this.lieu = lieu;
+        public void setHospital(String hospital) {
+            this.hospital = hospital;
         }
 
         public String getDateTimeDepart() {
@@ -196,13 +195,7 @@ public class Intervention {
             this.dateTimeDepart = dateTimeDepart;
         }
 
-        public Gps_coordonnee getGps_coordonnee() {
-            return gps_coordonnee;
-        }
 
-        public void setGps_coordonnee(Gps_coordonnee gps_coordonnee) {
-            this.gps_coordonnee = gps_coordonnee;
-        }
     }
 
 

@@ -8,4 +8,5 @@
     <color name="blue">#0E2CF0</color>
     <color name="orange">#F16D0E</color>
     <color name="red">#F01D0E</color>
+    <color name="hospital_selected">#B53643BF</color>
 </resources>

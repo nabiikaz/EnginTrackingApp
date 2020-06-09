@@ -6,7 +6,18 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class Hospital {
 
-    String name,numTel;
+    String name;
+    String numTel;
+
+    public String get_id() {
+        return _id;
+    }
+
+    public void set_id(String _id) {
+        this._id = _id;
+    }
+
+    String _id;
     Gps_coordonnee gps_coordonnee;
 
     DistanceMatrixResult.SubElement distance;

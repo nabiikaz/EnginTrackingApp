@@ -21,6 +21,7 @@
 
 
      <com.google.android.material.card.MaterialCardView
+         android:id="@+id/interventionCard"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
          android:layout_margin="30dp"
@@ -120,17 +121,20 @@
      </com.google.android.material.card.MaterialCardView>
 
        <com.google.android.material.card.MaterialCardView
+           android:id="@+id/hospitalsCard"
            android:layout_width="match_parent"
            android:layout_height="200dp"
            android:layout_margin="30dp"
-           android:visibility="visible"
+           android:visibility="gone"
            android:background="#1BFFFFFF"
 
            >
 
            <ScrollView
                android:layout_width="match_parent"
-               android:layout_height="match_parent">
+               android:layout_height="match_parent"
+               android:background="#1BFFFFFF"
+               >
 
                    <androidx.recyclerview.widget.RecyclerView
                        android:id="@+id/hospitalsRecyclerView"
@@ -155,6 +159,7 @@
 
        </com.google.android.material.card.MaterialCardView>
       <ImageView
+
           android:layout_above="@id/incident_btn"
           android:id="@+id/ambulance_btn"
           android:layout_width="40dp"

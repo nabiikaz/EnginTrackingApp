@@ -41,6 +41,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.material.card.MaterialCardView;
 import com.pfe.enginapp.LocationManager;
 import com.pfe.enginapp.R;
 import com.pfe.enginapp.adapters.HospitalsRecyclerViewAdapter;
@@ -51,7 +52,7 @@ import com.pfe.enginapp.viewmodels.MapsViewModel;
 
 import java.util.List;
 
-public class MapsFragment extends Fragment implements OnMapReadyCallback {
+public class MapsFragment extends Fragment implements OnMapReadyCallback,HospitalsRecyclerViewAdapter.OnHospitalListener {
     private static final String TAG = "MapsFragment";
 
     private HospitalsRecyclerViewAdapter adapter;
@@ -93,6 +94,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     ImageView ambulance_btn, accident_btn, hospital_btn;
     Button intervention_btn;
     ProgressBar progressBar;
+
+    MaterialCardView hospitalsCard,interventionCard;
+
     private String id_team;
 
 
@@ -216,7 +220,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         });
 
 
-        mMapsViewModel.getIntervention(id_team).observe(getViewLifecycleOwner(), new Observer<Intervention>() {
+        mMapsViewModel.fetchIntervention(id_team).observe(getViewLifecycleOwner(), new Observer<Intervention>() {
             @Override
             public void onChanged(Intervention intervention) {
 
@@ -227,10 +231,19 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
 
 
-                if(intervention == null)
+                if(intervention == null){
+                    interventionCard.setVisibility(View.GONE);
+                    hospitalsCard.setVisibility(View.GONE);
+
                     return;
 
-                Log.d(TAG, "getIntervention > onChanged:> status "+intervention.getStatut());
+                }
+
+
+
+
+                hospitalsCard.setVisibility(View.GONE);
+                interventionCard.setVisibility(View.VISIBLE);
 
 
 
@@ -240,10 +253,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
                 accidentMarker = initMarker(intervention.getAdresse().getGps_coordonnee().getLatLng(),"Accident",ACCIDENT_RESOURCE_ID);
 
-                if (intervention.getTransfere().getGps_coordonnee() != null) {
-                    hospitalMarker = initMarker(intervention.getTransfere().getGps_coordonnee().getLatLng(),intervention.getTransfere().getLieu(),HOSPITAL_RESOURCE_ID);
 
-                }
 
                 String status = intervention.getStatut();
                 switch (status) {
@@ -320,7 +330,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
 
 
-    private void initViews(View view){
+    private void initViews(final View view){
 
         address_rue = view.findViewById(R.id.address_rue);
         phone = view.findViewById(R.id.phone);
@@ -331,6 +341,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         start_time = view.findViewById(R.id.start_time);
         arrival_time = view.findViewById(R.id.arrival_time);
         transfer_time = view.findViewById(R.id.transfer_time);
+
+        hospitalsCard = view.findViewById(R.id.hospitalsCard);
+        interventionCard = view.findViewById(R.id.interventionCard);
 
 
 
@@ -383,6 +396,24 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         hospital_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(mMapsViewModel.getIntervention() == null){
+                    Toast.makeText(getContext(), "Une intervention est nécessaire pour cette fonctionnalité.", Toast.LENGTH_SHORT).show();
+                    return;
+
+                }
+                switch (hospitalsCard.getVisibility()) {
+                    case View.VISIBLE:
+                        hospitalsCard.setVisibility(View.GONE);
+                        interventionCard.setVisibility(View.VISIBLE);
+
+                        break;
+                    case View.GONE:
+                        interventionCard.setVisibility(View.GONE);
+                        hospitalsCard.setVisibility(View.VISIBLE);
+
+
+                        break;
+                }
 
                 if (hospitalMarker == null) {
                     Toast.makeText(getContext(), "Coordonnées GPS non disponibles", Toast.LENGTH_SHORT).show();
@@ -393,6 +424,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                 referenceLocation = hospitalMarker.getPosition();
 
 
+
             }
         });
         intervention_btn.setOnClickListener(new View.OnClickListener() {
@@ -401,7 +433,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
 
 
-                Intervention currentIntervention = mMapsViewModel.getIntervention(id_team).getValue();
+                Intervention currentIntervention = mMapsViewModel.fetchIntervention(id_team).getValue();
 
                 if (currentIntervention == null) {
                     return;
@@ -462,7 +494,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
 
     private void initRecyclerView(){
-       adapter = new HospitalsRecyclerViewAdapter(this.getContext());
+       adapter = new HospitalsRecyclerViewAdapter(this.getContext(),this);
 
 
 
@@ -516,7 +548,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     public void updateTeamId(String id_team){
         this.id_team = id_team;
 
-        mMapsViewModel.getIntervention(id_team);
+        mMapsViewModel.fetchIntervention(id_team);
 
 
     }
@@ -544,7 +576,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private void updateInterventionStatus(String status){
         if(status == "")
             return;
-        Intervention intervention = mMapsViewModel.getIntervention(id_team).getValue();
+        Intervention intervention = mMapsViewModel.fetchIntervention(id_team).getValue();
         intervention.setStatut(status);
         switch (status){
             case "recu" :
@@ -580,8 +612,28 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         progressBar.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    public void OnHospitalListener(int position) {
+        Hospital selectedHospital = adapter.getmHospitals().get(position);
+        LatLng location = selectedHospital.getGps_coordonnee().getLatLng();
+        String title = selectedHospital.getName();
+        if(hospitalMarker == null){
+            hospitalMarker = initMarker(location,title,HOSPITAL_RESOURCE_ID);
+        }else{
+            hospitalMarker.setPosition(location);
+            hospitalMarker.setTitle(title);
+        }
+
+        updateCamera(location);
+
+        hospitalsCard.setVisibility(View.GONE);
+        interventionCard.setVisibility(View.VISIBLE);
+
+        mMapsViewModel.updateHospitalTransfer(selectedHospital.get_id());
 
 
+
+    }
 
 
     private static class LocationCallBackHandler extends LocationCallback {
