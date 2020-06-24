@@ -17,7 +17,8 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class retrofitClient {
-    String API_BASE_URL = "http://192.168.1.3:8000/api/";
+    String API_BASE_URL = "https://protectioncivile2020.herokuapp.com/api/";
+    //private static String API_BASE_URL = "http://192.168.1.3:30001/api/";
     String authToken;
     private static Retrofit retrofit;
     private static retrofitClient instance;

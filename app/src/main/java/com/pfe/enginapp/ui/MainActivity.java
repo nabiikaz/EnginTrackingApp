@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         //startService(new Intent(MainActivity.this, InterventionAlertService.class));
 
 
-        textView = findViewById(R.id.textview);
+//        textView = findViewById(R.id.textview);
 
         /*Intent intent = new Intent(this,Login.class);
         startActivity(intent);

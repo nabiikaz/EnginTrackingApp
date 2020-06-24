@@ -51,6 +51,7 @@ public class Team {
         this.agents = agents;
     }
 
+
     public class Agent{
 
         public static final String SECOURS_TYPE = "secours";
@@ -133,7 +134,7 @@ public class Team {
 
     public String getChefId(){
         for (Agent agent : agents) {
-            if(agent.getType() == Agent.CHEF_TYPE ){
+            if(agent.getType().equals(Agent.CHEF_TYPE)){
                 return agent.getId_agent();
             }
         }

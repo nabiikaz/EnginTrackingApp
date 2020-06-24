@@ -30,7 +30,7 @@ public class Intervention {
 
     String dateTimeFin;
 
-    Transfere transfere;
+    Transfere transfere = new Transfere(null);
 
     String statut;
     String numTel;
@@ -178,6 +178,11 @@ public class Intervention {
 
     public class Transfere{
         String dateTimeDepart,hospital;
+
+
+        public Transfere(String hospital) {
+            this.hospital = hospital;
+        }
 
         public String getHospital() {
             return hospital;

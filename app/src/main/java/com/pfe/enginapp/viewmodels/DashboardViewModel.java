@@ -28,8 +28,8 @@ public class DashboardViewModel extends ViewModel {
 
     }
 
-    public LiveData<Agent> getSignedInAgent(){
-        mAgentRepository.getAgent(mAgent,"5e7bab5e98fa4d214c94e2ed");
+    public LiveData<Agent> getSignedInAgent(String idAgent){
+        mAgentRepository.getAgent(mAgent,idAgent);
 
         return mAgent;
 

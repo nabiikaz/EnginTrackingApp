@@ -22,7 +22,7 @@
         <TextView
             android:layout_marginLeft="15dp"
             android:id="@+id/hospital_name"
-            android:layout_width="270dp"
+            android:layout_width="230dp"
             android:layout_height="wrap_content"
             android:text="Hospital Name"
             android:textSize="18dp"
@@ -33,7 +33,7 @@
 
         <TextView
             android:id="@+id/duration"
-            android:layout_width="110dp"
+            android:layout_width="170dp"
             android:layout_height="wrap_content"
             android:textAlignment="center"
             android:text="N/A"
@@ -42,7 +42,7 @@
             />
         <TextView
             android:id="@+id/distance"
-            android:layout_width="110dp"
+            android:layout_width="170dp"
             android:layout_height="wrap_content"
             android:textAlignment="center"
             android:text="N/A"

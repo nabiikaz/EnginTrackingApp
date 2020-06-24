@@ -135,7 +135,7 @@ public class MapApiRepository {
 
     }
 
-    public void getHospitals(MutableLiveData<List<Hospital>> mHospitals) {
+    public void getHospitals(MutableLiveData<List<Hospital>> mHospitals,LatLng position) {
 
         Retrofit retrofit = new retrofitClient(authToken).getRetrofit();
 
@@ -143,7 +143,9 @@ public class MapApiRepository {
 
         Call<List<Hospital>> call = userClient.getHospitals();
 
-        call.enqueue(new FetchHopitals(mHospitals,"34.890267,-1.331937"));
+        String positionStr = position.latitude + ","+position.longitude;
+
+        call.enqueue(new FetchHopitals(mHospitals,positionStr));
 
     }
 

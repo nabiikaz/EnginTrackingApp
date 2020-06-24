@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel;
 import com.google.android.gms.maps.model.LatLng;
 import com.pfe.enginapp.models.Hospital;
 import com.pfe.enginapp.models.Intervention;
+import com.pfe.enginapp.models.Intervention.Transfere;
 import com.pfe.enginapp.models.SnappedPoints;
 import com.pfe.enginapp.repositories.MapApiRepository;
 
@@ -64,6 +65,11 @@ public class MapsViewModel extends ViewModel {
         return mIntervention.getValue();
     }
 
+    public void clearIntervention(){
+        mIntervention = new MutableLiveData<>();
+
+    }
+
 
 
     public void updateIntervention(Intervention intervention){
@@ -76,11 +82,16 @@ public class MapsViewModel extends ViewModel {
         mIntervention.getValue().getTransfere().setHospital(hospitalId);
 
 
+
+
         mMapApiRepository.updateIntervention(mIntervention,mIntervention.getValue());
     }
 
-    public LiveData<List<Hospital>> getHospitals(){
-        mMapApiRepository.getHospitals(mHospitals);
+    public LiveData<List<Hospital>> getHospitals(LatLng position){
+        if(position != null){
+            mMapApiRepository.getHospitals(mHospitals,position);
+        }
+
         return mHospitals;
     }
 

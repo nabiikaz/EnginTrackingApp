@@ -123,7 +123,7 @@
        <com.google.android.material.card.MaterialCardView
            android:id="@+id/hospitalsCard"
            android:layout_width="match_parent"
-           android:layout_height="200dp"
+           android:layout_height="300dp"
            android:layout_margin="30dp"
            android:visibility="gone"
            android:background="#1BFFFFFF"

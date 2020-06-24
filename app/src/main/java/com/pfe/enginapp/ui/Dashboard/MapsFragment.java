@@ -42,6 +42,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.textfield.TextInputEditText;
 import com.pfe.enginapp.LocationManager;
 import com.pfe.enginapp.R;
 import com.pfe.enginapp.adapters.HospitalsRecyclerViewAdapter;
@@ -98,6 +99,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,Hospita
     MaterialCardView hospitalsCard,interventionCard;
 
     private String id_team;
+
+
+
+    private Boolean intervention_btn_active = true;
+
+    public void setIntervention_btn_active(Boolean intervention_btn_active) {
+        this.intervention_btn_active = intervention_btn_active;
+    }
 
 
     public MapsFragment(String authToken){
@@ -254,10 +263,21 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,Hospita
                 accidentMarker = initMarker(intervention.getAdresse().getGps_coordonnee().getLatLng(),"Accident",ACCIDENT_RESOURCE_ID);
 
 
+                //fetch the list of the hospitals in accordance with the distance to this intervention incident
+                mMapsViewModel.getHospitals(accidentMarker.getPosition());
+
+
 
                 String status = intervention.getStatut();
                 switch (status) {
                     case "recu":
+                        if(hospitalMarker != null){
+                            hospitalMarker.setVisible(true);
+                        }
+                        if(accidentMarker != null){
+                            accidentMarker.setVisible(true);
+
+                        }
 
                         intervention_btn.setText("commencer l'intervention");
                         intervention_btn.setBackgroundResource(R.color.recu);
@@ -291,9 +311,23 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,Hospita
                         break;
 
                     case "termine":
-                        intervention_btn.setText("Cette intervention est terminée");
+                        mMapsViewModel.clearIntervention();
+                        hospitalsCard.setVisibility(View.GONE);
+                        interventionCard.setVisibility(View.GONE);
+                        if(hospitalMarker != null){
+                            hospitalMarker.setVisible(false);
+                        }
+                        if(accidentMarker != null){
+                            accidentMarker.setVisible(false);
+
+
+                        }
+
+
+
+                        /*intervention_btn.setText("Cette intervention est terminée");
                         intervention_btn.setBackgroundResource(R.color.recu);
-                        intervention_btn.setClickable(false);
+                        intervention_btn.setClickable(false);*/
                         break;
                 }
 
@@ -309,7 +343,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,Hospita
         });
 
 
-        mMapsViewModel.getHospitals().observe(getViewLifecycleOwner(), new Observer<List<Hospital>>() {
+        mMapsViewModel.getHospitals(null).observe(getViewLifecycleOwner(), new Observer<List<Hospital>>() {
             @Override
             public void onChanged(List<Hospital> hospitals) {
                 Log.d(TAG, "getHospitals > onChanged: "+hospitals.get(1).getName());
@@ -417,11 +451,15 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,Hospita
 
                 if (hospitalMarker == null) {
                     Toast.makeText(getContext(), "Coordonnées GPS non disponibles", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                updateCamera(hospitalMarker.getPosition());
 
-                referenceLocation = hospitalMarker.getPosition();
+                }else{
+                    updateCamera(hospitalMarker.getPosition());
+
+                    referenceLocation = hospitalMarker.getPosition();
+
+                }
+
+
 
 
 
@@ -473,6 +511,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,Hospita
                         break;
 
                     case "termine" :
+                        newStatus = "termine";
+                        dialogMessage = "L'intervention est terminée!";
 
                         intervention_btn.setClickable(false);
 
@@ -556,24 +596,46 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,Hospita
     public void confirmInterventionStatusChange(final String status,final String message){
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
+        View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.bilan_dialog_layout, (ViewGroup) getView(), false);
+        final TextInputEditText bilan = viewInflated.findViewById(R.id.bilan);
+
         builder.setTitle("Changement de statut d'intervention")
                 .setMessage(message)
                 .setNeutralButton("Confirmer", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        String bilanStr = "";
+                        if(status == "termine"){
+                            bilanStr = bilan.getText().toString();
+                        }
 
-                        updateInterventionStatus(status);
+                        updateInterventionStatus(status,bilanStr);
 
 
                     }
+
                 });
+
+        if(status == "termine"){
+
+
+            builder.setView(viewInflated);
+
+        }
+
+
+
+
+
+
+
 
         builder.create().show();
 
 
     }
 
-    private void updateInterventionStatus(String status){
+    private void updateInterventionStatus(String status,String bilanStr){
         if(status == "")
             return;
         Intervention intervention = mMapsViewModel.fetchIntervention(id_team).getValue();
@@ -595,6 +657,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,Hospita
                 break;
 
             case "transfere" :
+
                 intervention.getTransfere().setDateTimeDepart("now()");
 
 
@@ -603,6 +666,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,Hospita
 
             case "termine" :
                 intervention.setDateTimeFin("now()");
+                intervention.setBilan(bilanStr);
 
 
                 break;

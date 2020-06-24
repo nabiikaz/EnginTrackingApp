@@ -181,7 +181,8 @@ public class TeamMembersList extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        socket.disconnect();
+        if(socket != null)
+            socket.disconnect();
     }
 
     public void sendOnChannel1(String message) {
@@ -226,6 +227,10 @@ public class TeamMembersList extends Fragment {
 
         return mTeam.get_id().equals(id_team);
 
+    }
+
+    public Boolean isChef(String agentId){
+        return mTeam.getChefId().equals(agentId);
     }
 
     public Team getmTeam() {

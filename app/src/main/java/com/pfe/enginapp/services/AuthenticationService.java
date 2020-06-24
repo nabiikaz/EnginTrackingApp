@@ -5,9 +5,15 @@ import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
 
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.view.ViewCompat;
+
+import com.pfe.enginapp.R;
 import com.pfe.enginapp.models.Agent;
 import com.pfe.enginapp.models.Auth;
 import com.pfe.enginapp.ui.Dashboard.Dashboard;
@@ -89,11 +95,17 @@ public class AuthenticationService {
             Log.d(TAG, "currentUser : No Account is Singed In.");
             if (!currentActivity.equals(LOGIN_ACTIVITY)) {
                 Intent intent = new Intent(mContext, Login.class);
+
+
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+
                 mContext.startActivity(intent);
             }
 
             return null;
+
+
 
 
         }
@@ -113,6 +125,35 @@ public class AuthenticationService {
 
         String password = am.getPassword(account);
         return new Auth(account.name, password, authToken);
+
+
+    }
+
+    public String getAgentId(){
+
+        if(getCurrentUser() == null)
+            return "";
+
+
+        AccountManager am = AccountManager.get(mContext);
+        Account[] accounts = am.getAccountsByType(ACCOUNT_TYPE);
+        Account account;
+
+
+        if (accounts.length == 0) {
+
+
+            return "";
+
+        }
+
+
+      return  am.getUserData(accounts[0],Agent.AGENT_ID);
+
+
+
+
+
 
 
     }
@@ -280,6 +321,8 @@ public class AuthenticationService {
      */
     public void authenticateWithRedirection(final String activity_name) {
         Log.d(TAG, "checkToken: ");
+        if(getCurrentUser() == null)
+            return;
 
         final String authToken = getCurrentUser().getAuthToken();
         Retrofit retrofit = new retrofitClient().getRetrofit();
@@ -344,12 +387,26 @@ public class AuthenticationService {
 
 
     public void Logout(){
+        if(getCurrentUser() == null)
+            return;
 
         AccountManager accountManager = AccountManager.get(mContext);
+
+
 
         String authToken = getCurrentUser().getAuthToken();
 
         accountManager.invalidateAuthToken(AuthenticationService.ACCOUNT_TYPE,authToken);
+        Account[] accounts = accountManager.getAccountsByType(ACCOUNT_TYPE);
+
+        for (Account account : accounts) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+                accountManager.removeAccountExplicitly(account);
+            }
+
+        }
+
+
 
         Log.d(TAG, "Logout: "+currentActivity.equals(Login.class.getSimpleName()));
         Log.d(TAG, "Logout: new AuthToken "+getCurrentUser().getAuthToken());
@@ -365,6 +422,8 @@ public class AuthenticationService {
 
 
     public String getAuthToken(){
+        if(getCurrentUser() == null)
+            return "";
         return getCurrentUser().getAuthToken();
     }
 }

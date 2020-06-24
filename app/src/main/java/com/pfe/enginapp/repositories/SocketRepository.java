@@ -10,7 +10,8 @@ public class SocketRepository {
 
     private static SocketRepository instance;
     private Socket socket ;
-    private static String BASE_URL = "http://192.168.1.4:8000";
+    private static String BASE_URL = "https://protectioncivile2020.herokuapp.com";
+    //private static String BASE_URL = "http://192.168.1.3:30001/";
     private  String authToken;
     private  Agent agent ;
 

@@ -105,9 +105,13 @@ public class Dashboard extends AppCompatActivity {
 
         authenticationService.authenticateWithRedirection(AuthenticationService.NO_ACTIVITY);
 
+
+
         authToken = authenticationService.getAuthToken();
 
         notificationManager = NotificationManagerCompat.from(this);
+
+
 
 
 
@@ -136,15 +140,19 @@ public class Dashboard extends AppCompatActivity {
         mDashboardViewModel = new ViewModelProvider(this).get(DashboardViewModel.class);
 
         mDashboardViewModel.init(authToken);
-        mDashboardViewModel.getSignedInAgent().observe(this, new Observer<Agent>() {
+        mDashboardViewModel.getSignedInAgent(authenticationService.getAgentId()).observe(this, new Observer<Agent>() {
             @Override
             public void onChanged(Agent agent) {
+
+
+                Log.d(TAG, "onChanged dashboard: "+agent.getAgent_nom());
                 agentName_textview.setText(agent.getAgent_nom());
 
                 if(signedInAgent != null)
                     return;
 
                 signedInAgent = agent;
+
 
                 //init the socketRepository
 
@@ -169,6 +177,12 @@ public class Dashboard extends AppCompatActivity {
 
 
                             sendInterventionNotification(id_intervention);
+
+                            mapsFragment.mMapsViewModel.fetchIntervention(team_id);
+
+                            if(teamMembersList.isChef(signedInAgent.getAgent_id()))
+                                if(mapsFragment != null)
+                                    mapsFragment.setIntervention_btn_active(true);
 
                         }
 
@@ -235,9 +249,9 @@ public class Dashboard extends AppCompatActivity {
                 String id_team = mTeam.get_id();
 
                 if(signedInAgent.getAgent_id().equals(mTeam.getChefId())){
-                    mapsFragment.intervention_btn.setVisibility(View.GONE);
-                }else
                     mapsFragment.intervention_btn.setVisibility(View.VISIBLE);
+                }else
+                    mapsFragment.intervention_btn.setVisibility(View.GONE);
 
                 mapsFragment.updateTeamId(id_team);
 
